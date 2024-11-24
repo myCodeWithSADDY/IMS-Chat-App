@@ -83,7 +83,7 @@ const Header = () => {
                 display: { xs: "none", sm: "block" },
               }}
             >
-              Nigga chat
+              IMS Chat App
             </Typography>
 
             <Box
