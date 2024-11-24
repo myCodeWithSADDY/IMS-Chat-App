@@ -1,0 +1,6 @@
+# Environment configurati
+.env
+node_modules
+
+# Environment configuration
+**/.env
