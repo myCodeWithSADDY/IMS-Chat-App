@@ -127,3 +127,5 @@ server.listen(port, () => {
 });
 
 export { userSocketIDs };
+
+module.exports = app;
