@@ -20,7 +20,6 @@ const newUser = TryCatch(async (req, res, next) => {
   if (!file) return next(new ErrorHandler("Please Upload Avatar", 404));
 
   const result = await uploadFilesToCloudinary([file]);
-
   const avatar = {
     public_id: result[0].public_id,
     url: result[0].url,
@@ -180,9 +179,9 @@ const GetMyFriends = TryCatch(async (req, res) => {
   const friends = chats.map(({ members }) => {
     const otherUser = getOtherMember(members, req.user);
     return {
-      _id: otherUser._id,
-      name: otherUser.name,
-      avatar: otherUser.avatar.url,
+      _id: otherUser?._id,
+      name: otherUser?.name,
+      avatar: otherUser?.avatar.url,
     };
   });
   if (chatId) {

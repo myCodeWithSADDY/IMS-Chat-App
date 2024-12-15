@@ -40,7 +40,8 @@ const getMyChats = TryCatch(async (req, res, next) => {
     "members",
     "name avatar"
   );
-
+  if (!chats)
+    return next(new ErrorHandler("Add Members to See your Chats", 404));
   const transformedChats = chats.map(({ _id, name, members, groupChat }) => {
     const otherMember = getOtherMember(members, req.user);
 

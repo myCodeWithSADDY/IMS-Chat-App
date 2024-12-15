@@ -6,6 +6,6 @@ const corsOptions = {
   ],
   credentials: true,
 };
-const gandu_token = "gandu-token";
+const gandu_token = "Auth-Token";
 
 export { corsOptions, gandu_token };

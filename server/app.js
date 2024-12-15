@@ -10,6 +10,7 @@ import { Message } from "./models/message.js";
 import { connectDB } from "./utils/features.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
+
 import {
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
@@ -41,6 +42,7 @@ app.set("io", io);
 const userSocketIDs = new Map();
 
 connectDB(mongoURI);
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -126,6 +128,4 @@ server.listen(port, () => {
   console.log(`server listening on port ${port} in ${envMode} Mode`);
 });
 
-export { userSocketIDs };
-
-module.exports = app;
+export { userSocketIDs, app };

@@ -15,30 +15,26 @@ const cookieOptions = {
   secure: true,
 };
 
-const connectDB = (uri) => {
-  mongoose
-    .connect(uri, { dbname: "IMS Chat App" })
-    .then(() => {
-      console.log("Connected to MongoDB");
-    })
-    .catch((err) => {
-      console.error("MongoDB connection error:", err);
-      throw err;
-    });
+const connectDB = async (uri) => {
+  try {
+    await mongoose.connect(uri, { dbname: "IMS-Chat-App" });
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    // Optional: Retry logic can be added here.
+  }
 };
 
 const sendToken = (res, user, code, message) => {
-  // Properly structured jwt.sign call
   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "15d",
   });
 
-  return res.status(code).cookie("gandu-token", token, cookieOptions).json({
+  return res.status(code).cookie("Auth-Token", token, cookieOptions).json({
     success: true,
     user,
     token,
     message,
-    user,
   });
 };
 
@@ -53,6 +49,10 @@ const emitEvent = (req, event, users, data) => {
 const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
+      if (file.size > 1024 * 1024 * 5) {
+        // Limit file size to 5MB
+        reject(new Error("File size is too large"));
+      }
       cloudinary.uploader.upload(
         getBase64(file),
         { resource_type: "auto", public_id: uuid(), type: "upload" },
@@ -63,6 +63,7 @@ const uploadFilesToCloudinary = async (files = []) => {
       );
     });
   });
+
   try {
     const results = await Promise.all(uploadPromises);
     const formattedResult = results.map((result) => ({
@@ -71,11 +72,24 @@ const uploadFilesToCloudinary = async (files = []) => {
     }));
     return formattedResult;
   } catch (error) {
-    throw new Error("error uploading files", error);
+    throw new Error("Error uploading files", error);
   }
 };
 
-const deleteFilesFromCloudinary = async (public_ids) => {};
+const deleteFilesFromCloudinary = async (public_ids) => {
+  const deletePromises = public_ids.map((public_id) =>
+    cloudinary.uploader.destroy(public_id)
+  );
+
+  try {
+    await Promise.all(deletePromises);
+    console.log("Files deleted successfully");
+  } catch (error) {
+    console.error("Error deleting files:", error);
+    throw error;
+  }
+};
+
 export {
   connectDB,
   sendToken,

@@ -20,9 +20,10 @@ import Image from "../assets/background.png";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { userExists } from "../redux/reducers/auth";
 import { usernameValidator } from "../utils/validators";
+
 const Login = () => {
   const [isLogin, setisLogin] = useState(true);
-  const { isLoading, setIsLoading } = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleLogin = () => {
     setisLogin((prev) => !prev);
@@ -34,7 +35,7 @@ const Login = () => {
   const password = useStrongPassword();
 
   const avatar = useFileHandler("single");
-
+  console.log(avatar);
   const dispatch = useDispatch();
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -73,7 +74,7 @@ const Login = () => {
     // handle signup logic here
 
     const formData = new FormData();
-    formData.append("avatar", avatar.file);
+    formData.append("avatar", avatar?.file);
     formData.append("name", name.value);
     formData.append("bio", bio.value);
     formData.append("username", username.value);
@@ -208,9 +209,8 @@ const Login = () => {
                       height: "10rem",
                       objectFit: "contain",
                     }}
-                    src={avatar.preview}
+                    src={avatar?.preview}
                   />
-
                   <IconButton
                     sx={{
                       position: "absolute",
